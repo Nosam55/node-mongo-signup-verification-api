@@ -21,7 +21,7 @@ const schema = new Schema({
 });
 
 schema.virtual('isVerified').get(function () {
-    return !!(this.verified || this.passwordReset);
+    return !!(this.verified || this.passwordReset); //"not-not" i love JS bool-ification
 });
 
 schema.set('toJSON', {
