@@ -209,7 +209,7 @@ async function _delete(id) {
 // helper functions
 
 async function getAccount(id) {
-    if (!db.isValidId(id)) throw 'Account not found';
+    if (!db.isValidId(id)) throw 'Invalid ID: Account not found';
     const account = await db.Account.findById(id);
     if (!account) throw 'Account not found';
     return account;

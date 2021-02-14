@@ -17,6 +17,8 @@ app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: 
 app.use('/accounts', require('./accounts/accounts.controller'));
 app.use('/barcodes', require('./barcodes/barcode.controller'));
 
+console.log();
+
 // swagger docs route
 app.use('/api-docs', require('_helpers/swagger'));
 

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/node-mongo-signup-verification-api.iml" filepath="$PROJECT_DIR$/.idea/node-mongo-signup-verification-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../react-signup-verification-boilerplate/.idea/react-signup-verification-boilerplate.iml" filepath="$PROJECT_DIR$/../react-signup-verification-boilerplate/.idea/react-signup-verification-boilerplate.iml" />
     </modules>
   </component>
 </project>
