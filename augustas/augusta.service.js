@@ -42,7 +42,7 @@ async function create(userId, params){
 
 async function update(id, params){
     const augusta = await getAugusta(id);
-
+    //TODO: Write this
 }
 
 async function _delete(id){
