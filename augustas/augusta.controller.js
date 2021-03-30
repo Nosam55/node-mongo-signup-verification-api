@@ -2,7 +2,7 @@ const express = require('express');
 const router = new express.Router;
 const Joi = require('joi');
 const multer = require('multer');
-
+const { resolve } = require('path');
 const validateRequest = require('_middleware/validate-request');
 const authorize = require('_middleware/authorize');
 const Role = require('_helpers/role');
@@ -12,8 +12,8 @@ const storage = multer.diskStorage({
     destination: function(req, file, cb){
         cb(null, './uploads/');
     },
-    filename: function(req, file, cb){
-        cb(null, Date.now() + '-' + file.originalname);
+    filename: function(req, file, cb) {
+        cb(null, Date.now() + '-' + hashFileName(file.originalname));
     }
 });
 
@@ -21,14 +21,26 @@ const upload = multer({storage: storage});
 
 module.exports = router;
 
-router.get('/', authorize(), getAll);
-router.get('/:id', authorize(), getById);
+router.get('/get', authorize(), getAll);
+router.get('/mine', authorize(), getMine);
+router.get('/get/:id', authorize(), getById);
+router.get('/test', authorize(), upload.single("test"), test);
 router.post('/', authorize(), upload.single('photo'), createSchema, create);
 router.put('/:id', authorize(), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
 
+function test(req, res, next){
+    res.json({ message: req.file.destination })
+}
+
 function getAll(req, res, next){
     augustaService.getAll()
+        .then(augusta => res.json(augusta))
+        .catch(next);
+}
+
+function getMine(req, res, next){
+    augustaService.getMine(req.user.id)
         .then(augusta => res.json(augusta))
         .catch(next);
 }
@@ -68,14 +80,19 @@ function createSchema(req, res, next){
 
 function create(req, res, next){
     const filename = req.file.filename;
-    const fileType = filename.split('.')[filename.split('.').length - 1].toLowerCase();
+    const fileType = getFileType(filename);
+    const hostPrefix = 'http://localhost:4000/';
 
+    //Only allow images
     if(fileType !== 'png' && fileType !== 'jpg' && fileType !== 'jpeg' && filename !== 'gif'){
         res.sendStatus(415); //Unsupported File Type
         return;
     }
 
-    req.body.source = req.file.path;
+    //Set the source to wherever multer stored the image
+    req.body.source = hostPrefix + req.file.path;
+
+    //Split the tags by commas and trim whitespace around each keyword
     req.body.keywords = req.body.keywords.split(",").map(tag => tag.trim());
 
     augustaService.create(req.user.id, req.body)
@@ -109,4 +126,22 @@ function update(req, res, next){
 function _delete(req, res, next){
     augustaService.delete(req.params.id)
         .then()
+}
+
+//helper functions
+
+function getFileType(filename){
+    const segments = filename.split(".");
+    return segments[segments.length - 1].toLowerCase();
+}
+
+function hashFileName(filename){
+    const fileExt = "." + getFileType(filename);
+
+    let filehash = 1;
+    for(const char of filename){
+        filehash *= char.charCodeAt(0);
+    }
+    filehash %= Number.MAX_SAFE_INTEGER;
+    return String(filehash) + fileExt;
 }

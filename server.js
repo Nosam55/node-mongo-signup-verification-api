@@ -17,6 +17,7 @@ app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: 
 app.use('/accounts', require('./accounts/accounts.controller'));
 app.use('/barcodes', require('./barcodes/barcode.controller'));
 app.use('/augusta', require('./augustas/augusta.controller'));
+app.use('/uploads', express.static('uploads'));
 
 console.log("Routes loaded");
 

@@ -2,6 +2,7 @@ const db = require('_helpers/db');
 
 module.exports = {
     getById,
+    getMine,
     getAll,
     create,
     update,
@@ -22,6 +23,11 @@ async function getAugusta(id){
 
 async function getById(id){
     const augusta = await getAugusta(id);
+    return augusta;
+}
+
+async function getMine(accountId){
+    const augusta = await db.Augusta.find({ account: accountId });
     return augusta;
 }
 
