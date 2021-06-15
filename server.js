@@ -17,7 +17,7 @@ app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: 
 app.use('/accounts', require('./accounts/accounts.controller'));
 app.use('/barcodes', require('./barcodes/barcode.controller'));
 app.use('/augusta', require('./augustas/augusta.controller'));
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static('uploads')); //serve the uploads by name, locally?
 
 console.log("Routes loaded");
 
@@ -29,6 +29,6 @@ app.use(errorHandler);
 
 // start server
 const port = process.env.NODE_ENV === 'production' ? (process.env.PORT || 80) : 4000;
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
     console.log('Server listening on port ' + port);
 });

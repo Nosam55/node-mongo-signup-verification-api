@@ -20,7 +20,7 @@ augustaSchema.virtual('location').get(function(){
    return {lat: this.lat, long: this.long};
 });
 
-augustaSchema.virtual('lifespan').get(function () {
+augustaSchema.virtual('lifespan').get(function (){
     return {start: this.start, end: this.end};
 });
 

@@ -23,6 +23,8 @@ module.exports = {
 };
 
 async function authenticate({ email, password, ipAddress }) {
+    //Make the email lower-case before using it for case-insensitivity
+    email = email.toLowerCase();
     const account = await db.Account.findOne({ email });
 
     if (!account || !account.isVerified || !bcrypt.compareSync(password, account.passwordHash)) {
@@ -32,6 +34,8 @@ async function authenticate({ email, password, ipAddress }) {
     // authentication successful so generate jwt and refresh tokens
     const jwtToken = generateJwtToken(account);
     const refreshToken = generateRefreshToken(account, ipAddress);
+
+    console.log(`jwt: ${jwtToken}, ref: ${refreshToken}`);
 
     // save refresh token
     await refreshToken.save();
@@ -47,6 +51,10 @@ async function authenticate({ email, password, ipAddress }) {
 async function refreshToken({ token, ipAddress }) {
     const refreshToken = await getRefreshToken(token);
     const { account } = refreshToken;
+
+    console.log(token);
+    console.log(refreshToken);
+    console.log(account);
 
     // replace old refresh token with a new one and save
     const newRefreshToken = generateRefreshToken(account, ipAddress);
@@ -77,6 +85,10 @@ async function revokeToken({ token, ipAddress }) {
 }
 
 async function register(params, origin) {
+    // ensure case-insensitivity
+    if(params.email)
+        params.email = params.email.toLowerCase();
+
     // validate
     if (await db.Account.findOne({ email: params.email })) {
         // send already registered error in email to prevent account enumeration

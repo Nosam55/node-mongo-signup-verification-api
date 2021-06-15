@@ -8,6 +8,8 @@ const authorize = require('_middleware/authorize');
 const Role = require('_helpers/role');
 const augustaService = require('./augusta.service');
 
+const { photoHost } = require('./config');
+
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
         cb(null, './uploads/');
@@ -81,7 +83,7 @@ function createSchema(req, res, next){
 function create(req, res, next){
     const filename = req.file.filename;
     const fileType = getFileType(filename);
-    const hostPrefix = 'http://localhost:4000/';
+    const hostPrefix = photoHost;
 
     //Only allow images
     if(fileType !== 'png' && fileType !== 'jpg' && fileType !== 'jpeg' && filename !== 'gif'){
